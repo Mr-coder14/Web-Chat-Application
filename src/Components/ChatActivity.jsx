@@ -11,7 +11,7 @@ import {
   serverTimestamp
 } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, MessageCircle } from 'lucide-react';
 import '../css/ChatActivity.css';
 
 function ChatActivity({ receiverUid, backFunction, isMobile }) {
@@ -330,12 +330,20 @@ function ChatActivity({ receiverUid, backFunction, isMobile }) {
     }
   };
 
+  const focusMessageInput = () => {
+    document.querySelector('textarea')?.focus();
+  };
+
   return (
     <div className={`chat-activity-container ${isMobile ? 'mobile-chat-active' : ''}`}>
       {/* Chat header */}
       <div className="chat-header">
         <div className="chat-header-content">
-          
+          {backFunction && (
+            <button className="back-button" onClick={backFunction}>
+              <ArrowLeft size={22} />
+            </button>
+          )}
           
           {loading ? (
             <div className="profile-placeholder"></div>
@@ -368,7 +376,28 @@ function ChatActivity({ receiverUid, backFunction, isMobile }) {
             {blockedBy === 'receiver' ? 'You have been blocked by this user.' : 'You have blocked this user.'}
           </div>
         ) : messages.length === 0 ? (
-          <div className="no-messages">No messages yet. Start the conversation!</div>
+          <div className="no-messages-container">
+            <div className="chat-logo">
+              <div className="chat-logo-icon">
+                <MessageCircle size={48} />
+              </div>
+            </div>
+            <h2 className="no-messages-title">No messages yet</h2>
+            <p className="no-messages-text">
+              Start a conversation with {user?.name || 'this user'} by sending your first message below!
+            </p>
+            <button 
+              className="start-chat-btn" 
+              onClick={focusMessageInput}
+            >
+              Start conversation
+            </button>
+            <div className="typing-indicator">
+              <span className="typing-dot"></span>
+              <span className="typing-dot"></span>
+              <span className="typing-dot"></span>
+            </div>
+          </div>
         ) : (
           messages.map((message, index) => (
             <div 

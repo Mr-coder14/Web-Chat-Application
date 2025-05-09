@@ -84,7 +84,7 @@
 
 .chat-search-input:focus {
   outline: none;
-  border-color: #a044ff;
+  border-color: #ffffff;
   box-shadow: 0 0 0 2px rgba(160, 68, 255, 0.1);
   background-color: #ffffff;
 }
@@ -111,6 +111,13 @@
 .chat-list::-webkit-scrollbar-thumb {
   background-color: rgba(160, 68, 255, 0.3);
   border-radius: 10px;
+}
+.se{
+   outline: none;
+   color: white;
+   border: none;
+   width: 30px;
+   height: 30px;
 }
 
 .chat-item {

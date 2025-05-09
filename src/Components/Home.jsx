@@ -155,8 +155,8 @@ function Home() {
         {/* Header */}
         <div className="chat-header">
           <h1 className="text-xl font-semibold">Chats</h1>
-          <div className="flex space-x-4">
-            <button className="focus:outline-none" onClick={handleUsersList}>
+          <div >
+            <button className="se" onClick={handleUsersList}>
               <Search size={20} />
             </button>
           </div>
