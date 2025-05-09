@@ -4,8 +4,10 @@ import {
   Navigate,
   useNavigate,
   useLocation,
+  matchPath,
   Link
 } from "react-router-dom";
+
 import './App.css';
 import Login from './Components/Login';
 import Signup from "./Components/Signup";
@@ -97,22 +99,25 @@ function Navbar({ user, profileImageUrl }) {
 }
 
 // Main App component with conditional Navbar
+// Main App component with conditional Navbar
 function App() {
   const [user, setUser] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+ 
+  
   const location = useLocation();
+
+  const hideNavbarRoutes = ["/", "/signup"];
+  const isChatPage = matchPath("/chat/:userId", location.pathname);
   
-  // Check if current route should show navbar
-  const showNavbar = !["/", "/signup"].includes(location.pathname);
-  
-  // Get user data when component mounts
+  const showNavbar = !hideNavbarRoutes.includes(location.pathname) && !isChatPage;
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser(currentUser);
         
-        // Get user profile image if available
         const userRef = ref(database, `users/${currentUser.uid}`);
         onValue(userRef, (snapshot) => {
           const userData = snapshot.val();
@@ -122,9 +127,7 @@ function App() {
         });
       } else {
         setUser(null);
-        // Only redirect if on a protected route
         if (showNavbar) {
-          // Use window.location instead of navigate (since we're outside router context)
           window.location.href = "/";
         }
       }
@@ -134,12 +137,11 @@ function App() {
     
     return () => unsubscribe();
   }, [showNavbar]);
-  
-  // Display loading indicator while checking auth
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
-  
+
   return (
     <div className="app-container">
       {showNavbar && <Navbar user={user} profileImageUrl={profileImageUrl} />}
@@ -168,6 +170,7 @@ function App() {
               <Navigate to="/" />
             )
           } />
+          
           <Route path="/chat/:userId" element={
             user ? (
               <div className="content-container profile-container">
@@ -198,12 +201,12 @@ function App() {
             )
           } />
           
-          {/* Redirect any other routes to home */}
           <Route path="*" element={<Navigate to={user ? "/home" : "/"} />} />
         </Routes>
       </div>
     </div>
   );
 }
+
 
 export default App;

@@ -4,13 +4,11 @@ import '../css/Home.css';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue, get, query, orderByKey, limitToLast, set } from 'firebase/database';
-import ChatActivity from './ChatActivity';
 
 function Home() {
   const [chats, setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedChat, setSelectedChat] = useState(null);
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getDatabase();
@@ -120,28 +118,13 @@ function Home() {
       set(userChatRef, 0);
     }
     
-    // Instead of navigating, set the selected chat
-    setSelectedChat({
-      receiverUid: chat.userId,
-      receiverName: chat.name
+    // Navigate to chat activity with receiver info as URL params
+    navigate(`/chat/${chat.userId}`, {
+      state: {
+        receiverName: chat.name
+      }
     });
   };
-
-  // Function to go back to chat list
-  const handleBackToChats = () => {
-    setSelectedChat(null);
-  };
-
-  // If a chat is selected, show the ChatActivity component directly
-  if (selectedChat) {
-    return (
-      <ChatActivity
-        receiverUid={selectedChat.receiverUid}
-        receiverName={selectedChat.receiverName}
-        backFunction={handleBackToChats}
-      />
-    );
-  }
 
   return (
     <div className="chat-fullscreen-container">

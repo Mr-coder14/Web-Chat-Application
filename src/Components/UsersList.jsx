@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { auth, database } from './firebase';
-import { ref, onValue, get } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import '../css/UsersList.css';
-import ChatActivity from './ChatActivity';
 import { User, MessageCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function UsersList() {
   const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [selectedUserName, setSelectedUserName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const currentUser = auth.currentUser;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentUser?.uid) {
@@ -49,29 +48,15 @@ function UsersList() {
   // Function to handle clicking on a user to start chat
   const handleStartChat = (userId, userName) => {
     console.log("Starting chat with:", userId, userName);
-    setSelectedUserId(userId);
-    setSelectedUserName(userName);
+    
+    // Navigate to chat page with userId as parameter and userName in state
+    navigate(`/chat/${userId}`, {
+      state: {
+        receiverName: userName
+      }
+    });
   };
 
-  // Function to go back to users list
-  const handleBackToUsers = () => {
-    console.log("Returning to users list");
-    setSelectedUserId(null);
-    setSelectedUserName('');
-  };
-
-  // If a user is selected, show the ChatActivity
-  if (selectedUserId) {
-    return (
-      <ChatActivity
-        receiverUid={selectedUserId}
-        receiverName={selectedUserName}
-        backFunction={handleBackToUsers}
-      />
-    );
-  }
-
-  // Otherwise show the users list
   return (
     <div className="users-list-container">
       <div className="users-header">

@@ -1,21 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Send } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue, push, set } from 'firebase/database';
 import '../css/ChatActivity.css';
 
-function ChatActivity({ receiverUid, receiverName, backFunction }) {
+function ChatActivity() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
+  const { userId } = useParams(); // Get userId from URL params
+  const location = useLocation();
+  const receiverName = location.state?.receiverName || 'User';
   
   const auth = getAuth();
   const db = getDatabase();
   const currentUserId = auth.currentUser?.uid;
-  const userId = receiverUid; // Use the receiverUid prop directly
   
   // Create a chat ID (combinedId) by sorting and concatenating both user IDs
   const combinedId = 
@@ -134,13 +136,9 @@ function ChatActivity({ receiverUid, receiverName, backFunction }) {
     setNewMessage('');
   };
 
-  // Handle back button - use the provided backFunction
+  // Handle back button
   const handleBack = () => {
-    if (backFunction) {
-      backFunction();
-    } else {
-      navigate('/home');
-    }
+    navigate('/home');
   };
 
   // Format timestamp to readable time
@@ -165,7 +163,7 @@ function ChatActivity({ receiverUid, receiverName, backFunction }) {
           </div>
           <div className="chat-activity-user-info">
             <h3 className="chat-activity-user-name">
-              {receiverName || 'User'}
+              {receiverName}
             </h3>
           </div>
         </div>
