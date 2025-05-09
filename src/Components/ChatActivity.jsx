@@ -10,6 +10,7 @@ function ChatActivity() {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const navigate = useNavigate();
   const { userId } = useParams(); // Get userId from URL params
   const location = useLocation();
@@ -24,6 +25,34 @@ function ChatActivity() {
     currentUserId > userId
       ? currentUserId + userId
       : userId + currentUserId;
+
+  // Improved scroll to bottom function
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  };
+
+  // Ensure scroll works on iOS Safari
+  useEffect(() => {
+    const handleTouchMove = (e) => {
+      // If the scrollable container is at the edge, prevent default
+      const container = messagesContainerRef.current;
+      if (!container) return;
+      
+      // Check if content is smaller than container
+      if (container.scrollHeight <= container.clientHeight) {
+        e.preventDefault();
+      }
+    };
+
+    // Add touch event listeners for iOS
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
 
   useEffect(() => {
     if (!currentUserId || !userId) {
@@ -56,10 +85,10 @@ function ChatActivity() {
       setMessages(messagesList);
       setLoading(false);
       
-      // Scroll to bottom when messages load or update
+      // Scroll to bottom when messages load or update with a slightly longer delay
       setTimeout(() => {
         scrollToBottom();
-      }, 100);
+      }, 300);
     });
     
     return () => unsubscribe();
@@ -79,17 +108,16 @@ function ChatActivity() {
     // Update on resize and orientation change
     window.addEventListener('resize', setViewportHeight);
     window.addEventListener('orientationchange', setViewportHeight);
+    
+    // Also trigger on keyboard appearance (iOS)
+    window.visualViewport?.addEventListener('resize', setViewportHeight);
 
     return () => {
       window.removeEventListener('resize', setViewportHeight);
       window.removeEventListener('orientationchange', setViewportHeight);
+      window.visualViewport?.removeEventListener('resize', setViewportHeight);
     };
   }, []);
-
-  // Scroll to bottom of messages
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   // Send a new message
   const handleSendMessage = (e) => {
@@ -134,6 +162,9 @@ function ChatActivity() {
     
     // Clear input field
     setNewMessage('');
+    
+    // Make sure we scroll to bottom after sending a message
+    setTimeout(scrollToBottom, 100);
   };
 
   // Handle back button
@@ -170,7 +201,10 @@ function ChatActivity() {
       </div>
       
       {/* Messages Container */}
-      <div className="messages-container">
+      <div 
+        className="messages-container" 
+        ref={messagesContainerRef}
+      >
         {loading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
