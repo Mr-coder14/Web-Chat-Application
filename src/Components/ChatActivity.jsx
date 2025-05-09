@@ -1,25 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Send } from 'lucide-react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue, push, set } from 'firebase/database';
 import '../css/ChatActivity.css';
 
-function ChatActivity() {
+function ChatActivity({ receiverUid, receiverName, backFunction }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
-  const { userId } = useParams(); // Get userId from URL params
-  const location = useLocation();
-  
-  // Get chat data from navigation state or fetch it if navigating directly
-  const receiverData = location.state || {};
   
   const auth = getAuth();
   const db = getDatabase();
   const currentUserId = auth.currentUser?.uid;
+  const userId = receiverUid; // Use the receiverUid prop directly
   
   // Create a chat ID (combinedId) by sorting and concatenating both user IDs
   const combinedId = 
@@ -28,7 +24,13 @@ function ChatActivity() {
       : userId + currentUserId;
 
   useEffect(() => {
-    if (!currentUserId || !userId) return;
+    if (!currentUserId || !userId) {
+      console.log("Missing user IDs:", { currentUserId, userId });
+      return;
+    }
+
+    console.log("Loading messages for chat:", combinedId);
+    setLoading(true);
 
     // Reference to the chat messages
     const messagesRef = ref(db, `chatsRooms/${combinedId}`);
@@ -60,6 +62,27 @@ function ChatActivity() {
     
     return () => unsubscribe();
   }, [currentUserId, userId, combinedId, db]);
+
+  // Add useEffect for mobile viewport height adjustment
+  useEffect(() => {
+    // Fix for mobile viewport height issue
+    const setViewportHeight = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    // Set initial viewport height
+    setViewportHeight();
+
+    // Update on resize and orientation change
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+
+    return () => {
+      window.removeEventListener('resize', setViewportHeight);
+      window.removeEventListener('orientationchange', setViewportHeight);
+    };
+  }, []);
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -111,9 +134,13 @@ function ChatActivity() {
     setNewMessage('');
   };
 
-  // Handle back button
+  // Handle back button - use the provided backFunction
   const handleBack = () => {
-    navigate('/home');
+    if (backFunction) {
+      backFunction();
+    } else {
+      navigate('/home');
+    }
   };
 
   // Format timestamp to readable time
@@ -132,16 +159,14 @@ function ChatActivity() {
           <ArrowLeft size={20} color="#ffffff" />
         </button>
         <div className="chat-activity-user">
-          <div className={`chat-avatar ${receiverData.online ? 'online' : ''}`}>
-            {receiverData.receiverAvatar || '?'}
+          <div className="chat-avatar">
+            {/* Using first letter of receiver name as avatar placeholder */}
+            {receiverName ? receiverName.charAt(0).toUpperCase() : '?'}
           </div>
           <div className="chat-activity-user-info">
             <h3 className="chat-activity-user-name">
-              {receiverData.receiverName || 'User'}
+              {receiverName || 'User'}
             </h3>
-            <p className="chat-activity-user-status">
-              {receiverData.online ? 'Online' : 'Offline'}
-            </p>
           </div>
         </div>
       </div>
@@ -149,8 +174,9 @@ function ChatActivity() {
       {/* Messages Container */}
       <div className="messages-container">
         {loading ? (
-          <div className="flex justify-center items-center p-4">
+          <div className="loading-container">
             <div className="loading-spinner"></div>
+            <p>Loading conversation...</p>
           </div>
         ) : messages.length > 0 ? (
           <div className="messages-list">
@@ -168,7 +194,7 @@ function ChatActivity() {
             <div ref={messagesEndRef} />
           </div>
         ) : (
-          <div className="flex justify-center items-center h-full text-gray-500">
+          <div className="empty-chat-container">
             <p>No messages yet. Start a conversation!</p>
           </div>
         )}

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: calc(100vh - env(safe-area-inset-bottom, 0));
   width: 100%;
   background-color: #f0f4f7;
   position: fixed;
@@ -12,6 +13,7 @@
   right: 0;
   bottom: 0;
   z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* Chat Header */
@@ -185,6 +187,8 @@
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 5;
+  /* Ensure the input area stays above mobile navigation bar */
+  margin-bottom: env(safe-area-inset-bottom, 0);
 }
 
 .message-input {
@@ -264,5 +268,17 @@
   
   .message-input-container {
     padding: 0.75rem;
+  }
+  
+  /* Additional mobile-specific adjustments */
+  .chat-activity-fullscreen {
+    /* Ensure content doesn't overflow under the mobile navigation bar */
+    padding-bottom: constant(safe-area-inset-bottom); /* iOS 11.0 */
+    padding-bottom: env(safe-area-inset-bottom); /* iOS 11.2+ */
+  }
+  
+  .message-input-container {
+    /* Apply additional bottom padding on mobile */
+    padding-bottom: 77px;
   }
 }

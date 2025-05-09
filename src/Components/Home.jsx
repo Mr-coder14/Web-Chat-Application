@@ -4,11 +4,13 @@ import '../css/Home.css';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue, get, query, orderByKey, limitToLast, set } from 'firebase/database';
+import ChatActivity from './ChatActivity';
 
 function Home() {
   const [chats, setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedChat, setSelectedChat] = useState(null);
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getDatabase();
@@ -18,6 +20,8 @@ function Home() {
   useEffect(() => {
     if (!currentUserId) return;
 
+    console.log("Loading chats for user:", currentUserId);
+    
     // Reference to the user's chat list
     const chatsRef = ref(db, `chatss/${currentUserId}`);
     
@@ -35,8 +39,14 @@ function Home() {
               if (userSnapshot.exists()) {
                 const userData = userSnapshot.val();
                 
+                // Create combinedId for chat room
+                const combinedId = 
+                  currentUserId > receiverUid
+                    ? currentUserId + receiverUid
+                    : receiverUid + currentUserId;
+                
                 // Fetch last message
-                return get(query(ref(db, `chatsRooms/${currentUserId + receiverUid}`), orderByKey(), limitToLast(1)))
+                return get(query(ref(db, `chatsRooms/${combinedId}`), orderByKey(), limitToLast(1)))
                   .then((messageSnapshot) => {
                     let lastMessage = "Start a conversation";
                     let timestamp = "";
@@ -110,16 +120,28 @@ function Home() {
       set(userChatRef, 0);
     }
     
-    // Navigate to ChatActivity page with chat data as state
-    navigate(`/chat/${chat.userId}`, { 
-      state: { 
-        receiverUid: chat.userId,
-        receiverName: chat.name,
-        receiverAvatar: chat.avatar,
-        profile: chat.profile
-      } 
+    // Instead of navigating, set the selected chat
+    setSelectedChat({
+      receiverUid: chat.userId,
+      receiverName: chat.name
     });
   };
+
+  // Function to go back to chat list
+  const handleBackToChats = () => {
+    setSelectedChat(null);
+  };
+
+  // If a chat is selected, show the ChatActivity component directly
+  if (selectedChat) {
+    return (
+      <ChatActivity
+        receiverUid={selectedChat.receiverUid}
+        receiverName={selectedChat.receiverName}
+        backFunction={handleBackToChats}
+      />
+    );
+  }
 
   return (
     <div className="chat-fullscreen-container">
@@ -150,8 +172,9 @@ function Home() {
       {/* Chat list */}
       <div className="chat-list">
         {loading ? (
-          <div className="flex justify-center items-center p-4">
+          <div className="loading-container">
             <div className="loading-spinner"></div>
+            <p>Loading chats...</p>
           </div>
         ) : filteredChats.length > 0 ? (
           filteredChats.map((chat) => (
@@ -178,8 +201,11 @@ function Home() {
             </div>
           ))
         ) : (
-          <div className="flex justify-center items-center p-4 text-gray-500">
-            No chats found
+          <div className="empty-chats-container">
+            <p>No chats found</p>
+            <button className="start-chat-button" onClick={handleUsersList}>
+              Find people to chat with
+            </button>
           </div>
         )}
       </div>

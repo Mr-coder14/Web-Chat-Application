@@ -255,13 +255,13 @@
 /* Make sure the entire chat-fullscreen-container takes up the full viewport */
 @media (max-width: 768px) {
   .chat-fullscreen-container {
-    height: 100vh;
+    height: calc(100vh - var(--bottom-nav-height));
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    z-index: 100;
+    bottom: var(--bottom-nav-height);
+    z-index: 98;
   }
   
   .chat-header {
@@ -276,5 +276,9 @@
     width: 3rem;
     height: 3rem;
     font-size: 1.1rem;
+  }
+  
+  .chat-list {
+    padding-bottom: var(--bottom-nav-height);
   }
 }

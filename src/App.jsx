@@ -18,19 +18,18 @@ import Profile from "./Components/Profile";
 import EditProfile from "./Components/EditProfile";
 import UsersList from "./Components/UsersList";
 import ChatActivity from "./Components/ChatActivity";
+import { Home as HomeIcon, User, Search, MessageSquare } from 'lucide-react';
 
-// Navbar component
 // Navbar component
 function Navbar({ user, profileImageUrl }) {
   const location = useLocation();
   
   const getActiveClass = (path) => (location.pathname === path ? "active" : "");
 
-  // For desktop view
   return (
     <>
       {/* Desktop Navbar */}
-      <header className="header-container">
+      <header className="header-container desktop-only">
         <div className="header-content">
           <div className="header-logo">
             <h3>Chat Application</h3>
@@ -44,6 +43,12 @@ function Navbar({ user, profileImageUrl }) {
                     <Link to="/home" className={getActiveClass("/home")}>
                       <i className="bx bx-home-alt"></i>
                       <span>Home</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/userslist" className={getActiveClass("/userslist")}>
+                      <i className="bx bx-search"></i>
+                      <span>Users</span>
                     </Link>
                   </li>
                 </ul>
@@ -69,13 +74,19 @@ function Navbar({ user, profileImageUrl }) {
         <ul className="bottom-nav-links">
           <li>
             <Link to="/home" className={getActiveClass("/home")}>
-              <i className="bx bx-home-alt"></i>
+              <HomeIcon size={20} />
               <span>Home</span>
             </Link>
           </li>
           <li>
+            <Link to="/userslist" className={getActiveClass("/userslist")}>
+              <Search size={20} />
+              <span>Users</span>
+            </Link>
+          </li>
+          <li>
             <Link to="/profile" className={getActiveClass("/profile")}>
-              <i className="bx bx-user"></i>
+              <User size={20} />
               <span>Profile</span>
             </Link>
           </li>
@@ -85,12 +96,6 @@ function Navbar({ user, profileImageUrl }) {
   );
 }
 
-
-
-// Profile component
-
-
-// Main App component with conditional Navbar
 // Main App component with conditional Navbar
 function App() {
   const [user, setUser] = useState(null);
@@ -136,66 +141,68 @@ function App() {
   }
   
   return (
-    <>
+    <div className="app-container">
       {showNavbar && <Navbar user={user} profileImageUrl={profileImageUrl} />}
       
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        
-        <Route path="/home" element={
-          user ? (
-            <div className="content-container home-container">
-              <Home />
-            </div>
-          ) : (
-            <Navigate to="/" />
-          )
-        } />
-        
-        <Route path="/profile" element={
-          user ? (
-            <div className="content-container profile-container">
-              <Profile />
-            </div>
-          ) : (
-            <Navigate to="/" />
-          )
-        } />
-        <Route path="/chat/:userId" element={
-          user ? (
-            <div className="content-container profile-container">
-              <ChatActivity />
-            </div>
-          ) : (
-            <Navigate to="/" />
-          )
-        } />
-        
-        <Route path="/edit-profile" element={
-          user ? (
-            <div className="content-container">
-              <EditProfile />
-            </div>
-          ) : (
-            <Navigate to="/" />
-          )
-        } />
-        
-        <Route path="/userslist" element={
-          user ? (
-            <div className="content-container">
-              <UsersList />
-            </div>
-          ) : (
-            <Navigate to="/" />
-          )
-        } />
-        
-        {/* Redirect any other routes to home */}
-        <Route path="*" element={<Navigate to={user ? "/home" : "/"} />} />
-      </Routes>
-    </>
+      <div className={`main-content ${showNavbar ? 'has-navbar' : ''}`}>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          
+          <Route path="/home" element={
+            user ? (
+              <div className="content-container home-container">
+                <Home />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          } />
+          
+          <Route path="/profile" element={
+            user ? (
+              <div className="content-container profile-container">
+                <Profile />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          } />
+          <Route path="/chat/:userId" element={
+            user ? (
+              <div className="content-container profile-container">
+                <ChatActivity />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          } />
+          
+          <Route path="/edit-profile" element={
+            user ? (
+              <div className="content-container">
+                <EditProfile />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          } />
+          
+          <Route path="/userslist" element={
+            user ? (
+              <div className="content-container">
+                <UsersList />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          } />
+          
+          {/* Redirect any other routes to home */}
+          <Route path="*" element={<Navigate to={user ? "/home" : "/"} />} />
+        </Routes>
+      </div>
+    </div>
   );
 }
 
