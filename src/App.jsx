@@ -17,6 +17,7 @@ import Requests from "./Components/Requests";
 import Profile from "./Components/Profile";
 import EditProfile from "./Components/EditProfile";
 import UsersList from "./Components/UsersList";
+import ChatActivity from "./Components/ChatActivity";
 
 // Navbar component
 // Navbar component
@@ -156,6 +157,15 @@ function App() {
           user ? (
             <div className="content-container profile-container">
               <Profile />
+            </div>
+          ) : (
+            <Navigate to="/" />
+          )
+        } />
+        <Route path="/chat/:userId" element={
+          user ? (
+            <div className="content-container profile-container">
+              <ChatActivity />
             </div>
           ) : (
             <Navigate to="/" />

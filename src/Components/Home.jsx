@@ -1,38 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Search, Menu, ArrowLeft } from 'lucide-react';
+import { Search } from 'lucide-react';
 import '../css/Home.css';
 import { useNavigate } from 'react-router-dom';
-import ChatActivity from './ChatActivity';
 import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, onValue, get, query, orderByKey, limitToLast } from 'firebase/database';
+import { getDatabase, ref, onValue, get, query, orderByKey, limitToLast, set } from 'firebase/database';
 
 function Home() {
   const [chats, setChats] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [showChatOnMobile, setShowChatOnMobile] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getDatabase();
   const currentUserId = auth.currentUser?.uid;
-
-  // Check if the screen is mobile
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    // Initial check
-    checkIsMobile();
-    
-    // Add listener for window resize
-    window.addEventListener('resize', checkIsMobile);
-    
-    // Clean up
-    return () => window.removeEventListener('resize', checkIsMobile);
-  }, []);
 
   // Fetch chat list from Firebase
   useEffect(() => {
@@ -43,7 +23,6 @@ function Home() {
     
     const unsubscribe = onValue(chatsRef, async (snapshot) => {
       if (snapshot.exists()) {
-        const chatData = [];
         const promises = [];
 
         snapshot.forEach((childSnapshot) => {
@@ -94,7 +73,6 @@ function Home() {
           promises.push(userPromise);
         });
         
-      
         const results = await Promise.all(promises);
         const filteredResults = results.filter(result => result !== null);
         setChats(filteredResults);
@@ -107,7 +85,6 @@ function Home() {
     
     return () => unsubscribe();
   }, [currentUserId, db]);
-
 
   useEffect(() => {
     const chatItems = document.querySelectorAll('.chat-item');
@@ -127,108 +104,82 @@ function Home() {
   };
 
   const handleSelectChat = (chat) => {
-    setSelectedChat(chat);
-    
-    // If on mobile, show chat and hide sidebar
-    if (isMobile) {
-      setShowChatOnMobile(true);
-    }
-    
     // Reset unread message count when chat is selected
     if (currentUserId && chat.userId) {
       const userChatRef = ref(db, `chatss/${currentUserId}/${chat.userId}/messagecount`);
-      // Import and use set function from firebase/database to set the value to 0
-      import('firebase/database').then(({ set }) => {
-        set(userChatRef, 0);
-      });
+      set(userChatRef, 0);
     }
-  };
-  
-  const handleBackToList = () => {
-    setShowChatOnMobile(false);
+    
+    // Navigate to ChatActivity page with chat data as state
+    navigate(`/chat/${chat.userId}`, { 
+      state: { 
+        receiverUid: chat.userId,
+        receiverName: chat.name,
+        receiverAvatar: chat.avatar,
+        profile: chat.profile
+      } 
+    });
   };
 
   return (
-    <div className="chat-container">
-      {/* Left sidebar - Chat list (30% width on desktop, 100% on mobile when chat not selected) */}
-      <div className={`chat-sidebar ${isMobile && showChatOnMobile ? 'hidden' : ''}`}>
-        {/* Header */}
-        <div className="chat-header">
-          <h1 className="text-xl font-semibold">Chats</h1>
-          <div >
-            <button className="se" onClick={handleUsersList}>
-              <Search size={20} />
-            </button>
-          </div>
-        </div>
-        
-        {/* Search bar */}
-        <div className="chat-search">
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Search or start a new chat" 
-              className="chat-search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Search size={16} className="chat-search-icon" />
-          </div>
-        </div>
-        
-        {/* Chat list */}
-        <div className="chat-list">
-          {loading ? (
-            <div className="flex justify-center items-center p-4">
-              <div className="loading-spinner"></div>
-            </div>
-          ) : filteredChats.length > 0 ? (
-            filteredChats.map((chat) => (
-              <div 
-                key={chat.id}
-                onClick={() => handleSelectChat(chat)}
-                className={`chat-item ${selectedChat?.id === chat.id ? 'active' : ''}`}
-              >
-                <div className={`chat-avatar ${chat.online ? 'online' : ''}`}>
-                  {chat.avatar}
-                </div>
-                <div className="chat-info">
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="chat-name">{chat.name}</h3>
-                    <span className="chat-date">{chat.date}</span>
-                  </div>
-                  <p className="chat-message">{chat.lastMessage}</p>
-                </div>
-                {chat.unread > 0 && (
-                  <span className="chat-badge">
-                    {chat.unread}
-                  </span>
-                )}
-              </div>
-            ))
-          ) : (
-            <div className="flex justify-center items-center p-4 text-gray-500">
-              No chats found
-            </div>
-          )}
+    <div className="chat-fullscreen-container">
+      {/* Header */}
+      <div className="chat-header">
+        <h1 className="text-xl font-semibold">Chats</h1>
+        <div>
+          <button className="se" onClick={handleUsersList}>
+            <Search size={20} />
+          </button>
         </div>
       </div>
       
-      {/* Right side - Chat area (70% width on desktop, 100% on mobile when chat selected) */}
-      <div className={`chat-content ${isMobile && showChatOnMobile ? 'active' : ''}`}>
-        {selectedChat ? (
-          // Use ChatActivity component for the selected chat
-          <ChatActivity 
-            key={selectedChat.userId}
-            receiverUid={selectedChat.userId}
-            backFunction={isMobile ? handleBackToList : undefined} // Only pass the back function on mobile
+      {/* Search bar */}
+      <div className="chat-search">
+        <div className="relative">
+          <input 
+            type="text" 
+            placeholder="Search or start a new chat" 
+            className="chat-search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-        ) : (
-          // Show placeholder when no chat is selected
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-500">
-              <p className="text-lg">Select a chat to start messaging</p>
+          <Search size={16} className="chat-search-icon" />
+        </div>
+      </div>
+      
+      {/* Chat list */}
+      <div className="chat-list">
+        {loading ? (
+          <div className="flex justify-center items-center p-4">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : filteredChats.length > 0 ? (
+          filteredChats.map((chat) => (
+            <div 
+              key={chat.id}
+              onClick={() => handleSelectChat(chat)}
+              className="chat-item"
+            >
+              <div className={`chat-avatar ${chat.online ? 'online' : ''}`}>
+                {chat.avatar}
+              </div>
+              <div className="chat-info">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="chat-name">{chat.name}</h3>
+                  <span className="chat-date">{chat.date}</span>
+                </div>
+                <p className="chat-message">{chat.lastMessage}</p>
+              </div>
+              {chat.unread > 0 && (
+                <span className="chat-badge">
+                  {chat.unread}
+                </span>
+              )}
             </div>
+          ))
+        ) : (
+          <div className="flex justify-center items-center p-4 text-gray-500">
+            No chats found
           </div>
         )}
       </div>
