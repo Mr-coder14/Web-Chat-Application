@@ -279,6 +279,6 @@
   
   .message-input-container {
     /* Apply additional bottom padding on mobile */
-    padding-bottom: 80px;
+    /* padding-bottom: 10px; */
   }
 }
