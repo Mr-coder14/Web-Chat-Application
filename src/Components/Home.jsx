@@ -186,9 +186,7 @@ function Home() {
         ) : (
           <div className="empty-chats-container">
             <p>No chats found</p>
-            <button className="start-chat-button" onClick={handleUsersList}>
-              Find people to chat with
-            </button>
+            
           </div>
         )}
       </div>
