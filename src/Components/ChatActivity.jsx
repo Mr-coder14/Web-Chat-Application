@@ -9,7 +9,10 @@ function ChatActivity() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const messagesEndRef = useRef(null);
+  const messageInputRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const navigate = useNavigate();
   const { userId } = useParams(); // Get userId from URL params
   const location = useLocation();
@@ -65,30 +68,84 @@ function ChatActivity() {
     return () => unsubscribe();
   }, [currentUserId, userId, combinedId, db]);
 
-  // Add useEffect for mobile viewport height adjustment
+  // Fix for mobile viewport height issues
   useEffect(() => {
-    // Fix for mobile viewport height issue
     const setViewportHeight = () => {
+      // Set the value of --vh custom property to the true viewport height
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
 
-    // Set initial viewport height
+    // Initial calculation
     setViewportHeight();
 
-    // Update on resize and orientation change
+    // Recalculate on resize and orientation change
     window.addEventListener('resize', setViewportHeight);
     window.addEventListener('orientationchange', setViewportHeight);
+    
+    // Handle keyboard show/hide events
+    const handleVisibilityChange = () => {
+      // Use setTimeout to ensure this runs after the browser has updated the viewport
+      setTimeout(() => {
+        setViewportHeight();
+        scrollToBottom();
+      }, 300);
+    };
+
+    // These events help detect keyboard appearance in some mobile browsers
+    window.addEventListener('resize', handleVisibilityChange);
+    
+    // iOS specific events (if supported)
+    if ('visualViewport' in window) {
+      window.visualViewport.addEventListener('resize', handleVisibilityChange);
+      window.visualViewport.addEventListener('scroll', handleVisibilityChange);
+    }
 
     return () => {
       window.removeEventListener('resize', setViewportHeight);
       window.removeEventListener('orientationchange', setViewportHeight);
+      window.removeEventListener('resize', handleVisibilityChange);
+      
+      if ('visualViewport' in window) {
+        window.visualViewport.removeEventListener('resize', handleVisibilityChange);
+        window.visualViewport.removeEventListener('scroll', handleVisibilityChange);
+      }
+    };
+  }, []);
+
+  // Monitor focus on input to detect keyboard visibility
+  useEffect(() => {
+    const handleFocus = () => {
+      setIsKeyboardVisible(true);
+      // Small delay to ensure keyboard is fully shown
+      setTimeout(() => {
+        scrollToBottom();
+      }, 300);
+    };
+
+    const handleBlur = () => {
+      setIsKeyboardVisible(false);
+    };
+
+    const inputElement = messageInputRef.current;
+    if (inputElement) {
+      inputElement.addEventListener('focus', handleFocus);
+      inputElement.addEventListener('blur', handleBlur);
+    }
+
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener('focus', handleFocus);
+        inputElement.removeEventListener('blur', handleBlur);
+      }
     };
   }, []);
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   // Send a new message
@@ -134,6 +191,11 @@ function ChatActivity() {
     
     // Clear input field
     setNewMessage('');
+    
+    // Ensure keyboard focus remains in the input field
+    if (messageInputRef.current) {
+      messageInputRef.current.focus();
+    }
   };
 
   // Handle back button
@@ -170,7 +232,7 @@ function ChatActivity() {
       </div>
       
       {/* Messages Container */}
-      <div className="messages-container">
+      <div className="messages-container" ref={messagesContainerRef}>
         {loading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
@@ -206,6 +268,7 @@ function ChatActivity() {
           className="message-input"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          ref={messageInputRef}
         />
         <button 
           type="submit" 
