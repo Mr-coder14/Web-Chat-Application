@@ -1,4 +1,4 @@
-/* Home.css - Updated for side-by-side layout */
+/* Home.css - Updated for side-by-side layout and improved mobile support */
 .chat-container {
   display: flex;
   height: 100vh;
@@ -282,24 +282,37 @@
     width: 100%;
     height: 100%;
     display: flex;
-  }
-  
-  .chat-content {
-    width: 100%;
-    height: 100%;
-    display: none;
-  }
-  
-  .chat-content.active {
-    display: flex;
+    z-index: 10;
+    transition: transform 0.3s ease-in-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
   
   .chat-sidebar.hidden {
     display: none;
   }
   
+  .chat-content {
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 20;
+  }
+  
+  .chat-content.active {
+    display: flex;
+  }
+  
   /* Show back button only on mobile */
   .mobile-only {
     display: flex;
+  }
+  
+  /* Ensure we have a nice transition when switching views */
+  .chat-sidebar, .chat-content {
+    transition: all 0.3s ease-in-out;
   }
 }

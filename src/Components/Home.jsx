@@ -11,10 +11,28 @@ function Home() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showChatOnMobile, setShowChatOnMobile] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getDatabase();
   const currentUserId = auth.currentUser?.uid;
+
+  // Check if the screen is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkIsMobile();
+    
+    // Add listener for window resize
+    window.addEventListener('resize', checkIsMobile);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   // Fetch chat list from Firebase
   useEffect(() => {
@@ -111,6 +129,11 @@ function Home() {
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
     
+    // If on mobile, show chat and hide sidebar
+    if (isMobile) {
+      setShowChatOnMobile(true);
+    }
+    
     // Reset unread message count when chat is selected
     if (currentUserId && chat.userId) {
       const userChatRef = ref(db, `chatss/${currentUserId}/${chat.userId}/messagecount`);
@@ -120,11 +143,15 @@ function Home() {
       });
     }
   };
+  
+  const handleBackToList = () => {
+    setShowChatOnMobile(false);
+  };
 
   return (
     <div className="chat-container">
-      {/* Left sidebar - Chat list (30% width) */}
-      <div className="chat-sidebar">
+      {/* Left sidebar - Chat list (30% width on desktop, 100% on mobile when chat not selected) */}
+      <div className={`chat-sidebar ${isMobile && showChatOnMobile ? 'hidden' : ''}`}>
         {/* Header */}
         <div className="chat-header">
           <h1 className="text-xl font-semibold">Chats</h1>
@@ -187,14 +214,14 @@ function Home() {
         </div>
       </div>
       
-      {/* Right side - Chat area (70% width) */}
-      <div className="chat-content">
+      {/* Right side - Chat area (70% width on desktop, 100% on mobile when chat selected) */}
+      <div className={`chat-content ${isMobile && showChatOnMobile ? 'active' : ''}`}>
         {selectedChat ? (
           // Use ChatActivity component for the selected chat
           <ChatActivity 
             key={selectedChat.userId}
             receiverUid={selectedChat.userId}
-            backFunction={() => {}} // Empty function since we don't need to go back - both components are visible
+            backFunction={isMobile ? handleBackToList : undefined} // Only pass the back function on mobile
           />
         ) : (
           // Show placeholder when no chat is selected

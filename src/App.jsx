@@ -19,104 +19,68 @@ import EditProfile from "./Components/EditProfile";
 import UsersList from "./Components/UsersList";
 
 // Navbar component
+// Navbar component
 function Navbar({ user, profileImageUrl }) {
   const location = useLocation();
-  const navigate = useNavigate();
   
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  const navbarRef = useRef(null);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-  
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        navbarRef.current &&
-        !navbarRef.current.contains(event.target) &&
-        isMenuOpen
-      ) {
-        closeMenu();
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMenuOpen]);
-  
-  useEffect(() => {
-    closeMenu();
-  }, [location.pathname]);
-
   const getActiveClass = (path) => (location.pathname === path ? "active" : "");
 
+  // For desktop view
   return (
-    <header className="header-container">
-      <div className="header-content">
-        <div className="header-logo">
-          <h3>Chat Application</h3>
-        </div>
-        
-        <div ref={navbarRef} className="navbar-container">
-          <nav className={`navbar ${isMenuOpen ? "active" : ""}`}>
-            <div className="menu-header">
-              <h4>Menu</h4>
-              <button className="close-btn" onClick={closeMenu}>
-                <i className="bx bx-x"></i>
-              </button>
-            </div>
-            
-            <div className="nav-actions">
-              <ul className="nav-links">
-                <li>
-                  <Link to="/home" className={getActiveClass("/home")}>
-                    <i className="bx bx-home-alt"></i>
-                    <span>Home</span>
-                  </Link>
-                </li>
-                
-                <li>
-                  <Link to="/requests" className={getActiveClass("/requests")}>
-                    <i className="bx bx-copy"></i>
-                    <span>Requests</span>
-                  </Link>
-                </li>
-              </ul>
-              
-              <Link
-                to="/profile"
-                className={`profile-link ${getActiveClass("/profile")}`}
-              >
-                <img
-                  src={profileImageUrl || "/person3.jpg"}
-                  alt="Profile"
-                  className="profile-image"
-                />
-              </Link>
-            </div>
-                  
-          </nav>
+    <>
+      {/* Desktop Navbar */}
+      <header className="header-container">
+        <div className="header-content">
+          <div className="header-logo">
+            <h3>Chat Application</h3>
+          </div>
           
-          {isMenuOpen && (
-            <div className="navbar-backdrop" onClick={closeMenu}></div>
-          )}
+          <div className="navbar-container">
+            <nav className="navbar">
+              <div className="nav-actions">
+                <ul className="nav-links">
+                  <li>
+                    <Link to="/home" className={getActiveClass("/home")}>
+                      <i className="bx bx-home-alt"></i>
+                      <span>Home</span>
+                    </Link>
+                  </li>
+                </ul>
+                
+                <Link
+                  to="/profile"
+                  className={`profile-link ${getActiveClass("/profile")}`}
+                >
+                  <img
+                    src={profileImageUrl || "/person3.jpg"}
+                    alt="Profile"
+                    className="profile-image"
+                  />
+                </Link>
+              </div>
+            </nav>
+          </div>
         </div>
-        
-        <div className="mobile-controls">
-          <button className="menu-toggle" onClick={toggleMenu}>
-            <i className="bx bx-menu"></i>
-          </button>
-        </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Mobile Bottom Navbar */}
+      <nav className="bottom-navbar">
+        <ul className="bottom-nav-links">
+          <li>
+            <Link to="/home" className={getActiveClass("/home")}>
+              <i className="bx bx-home-alt"></i>
+              <span>Home</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" className={getActiveClass("/profile")}>
+              <i className="bx bx-user"></i>
+              <span>Profile</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </>
   );
 }
 
@@ -125,6 +89,7 @@ function Navbar({ user, profileImageUrl }) {
 // Profile component
 
 
+// Main App component with conditional Navbar
 // Main App component with conditional Navbar
 function App() {
   const [user, setUser] = useState(null);
@@ -187,37 +152,29 @@ function App() {
           )
         } />
         
-        <Route path="/requests" element={
-          user ? (
-            <div className="content-container requests-container">
-              <Requests />
-            </div>
-          ) : (
-            <Navigate to="/" />
-          )
-        } />
-        
         <Route path="/profile" element={
           user ? (
-            <div className="content-container requests-container">
+            <div className="content-container profile-container">
               <Profile />
             </div>
           ) : (
             <Navigate to="/" />
           )
         } />
+        
         <Route path="/edit-profile" element={
           user ? (
-            <div className="content-container requests-container">
+            <div className="content-container">
               <EditProfile />
             </div>
           ) : (
             <Navigate to="/" />
           )
         } />
+        
         <Route path="/userslist" element={
           user ? (
-            <div className="content-container requests-container">
+            <div className="content-container">
               <UsersList />
             </div>
           ) : (

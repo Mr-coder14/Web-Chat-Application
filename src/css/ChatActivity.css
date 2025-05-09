@@ -1,19 +1,27 @@
-/* ChatActivity.css - Updated to work with Home.css side-by-side layout */
+/* ChatActivity.css - Refined layout and positioning */
 .chat-activity-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
   background-color: #f5f5f5;
+  position: relative;
 }
 
-.chat-activity-container .chat-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
+/* Header styles - fixed height and proper content alignment */
+.chat-header {
+  height: 60px;
   background: linear-gradient(135deg, #6a3093 0%, #a044ff 100%);
   color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.chat-header-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 15px;
+  max-width: 100%;
 }
 
 .back-button {
@@ -21,27 +29,39 @@
   border: none;
   color: white;
   cursor: pointer;
-  margin-right: 15px;
+  margin-right: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  padding: 6px;
+  transition: background-color 0.2s;
+  border-radius: 50%;
 }
 
-.profile-info {
+.back-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.profile-info1 {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   flex-grow: 1;
   cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  margin-top: 0px;
+  
 }
 
 .profile-image {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   overflow: hidden;
   background-color: #ddd;
   margin-right: 10px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .profile-image img {
@@ -50,25 +70,47 @@
   object-fit: cover;
 }
 
+.profile-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #a044ff;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
 .user-details {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .user-details h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .status-text {
   margin: 0;
   font-size: 12px;
   opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Messages container */
 .messages-container {
   flex-grow: 1;
-  padding: 15px;
+  padding: 12px 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -76,24 +118,31 @@
   background-color: #f5f5f5;
 }
 
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .message {
   max-width: 70%;
   padding: 8px 12px;
-  border-radius: 10px;
-  margin-bottom: 5px;
+  border-radius: 12px;
   position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .message.sent {
   align-self: flex-end;
   background-color: #e3f2fd;
-  border-top-right-radius: 0;
+  border-top-right-radius: 2px;
 }
 
 .message.received {
   align-self: flex-start;
   background-color: white;
-  border-top-left-radius: 0;
+  border-top-left-radius: 2px;
 }
 
 .message-content {
@@ -104,14 +153,16 @@
 .message-content p {
   margin: 0;
   word-break: break-word;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .message-meta {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 5px;
-  margin-top: 4px;
+  gap: 4px;
+  margin-top: 3px;
 }
 
 .message-time {
@@ -128,23 +179,27 @@
   color: #a044ff;
 }
 
+/* Input container */
 .input-container {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 8px 12px;
   background-color: white;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #eaeaea;
+  min-height: 56px;
 }
 
 .input-container textarea {
   flex-grow: 1;
   border: 1px solid #ddd;
   border-radius: 20px;
-  padding: 10px 15px;
+  padding: 9px 15px;
   font-size: 14px;
   max-height: 100px;
-  min-height: 20px;
+  min-height: 18px;
   resize: none;
+  line-height: 1.4;
+  font-family: inherit;
 }
 
 .input-container textarea:focus {
@@ -158,30 +213,34 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-left: 10px;
+  width: 36px;
+  height: 36px;
+  margin-left: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(106, 48, 147, 0.3);
+  box-shadow: 0 2px 4px rgba(106, 48, 147, 0.3);
+  transition: transform 0.1s;
+}
+
+.send-button:hover:not(:disabled) {
+  transform: scale(1.05);
 }
 
 .send-button:disabled {
-  background-color: #ccc;
+  background: #ccc;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .loading-spinner {
-  height: 40px;
-  width: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  height: 36px;
+  width: 36px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
   border-top-color: #a044ff;
   animation: spin 1s linear infinite;
-  margin: auto;
 }
 
 @keyframes spin {
@@ -191,7 +250,7 @@
 }
 
 .profile-placeholder {
-  height: 40px;
+  height: 38px;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
@@ -202,6 +261,9 @@
   padding: 20px;
   margin: auto;
   color: #757575;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 .no-messages {
@@ -209,23 +271,41 @@
   padding: 20px;
   margin: auto;
   color: #757575;
+  font-size: 14px;
 }
 
-/* Hide back button in desktop view when using side-by-side layout */
-.mobile-only {
-  display: none;
-}
-
-/* Responsive layout for mobile devices */
+/* Mobile responsive styles */
 @media (max-width: 768px) {
-  /* Show back button on mobile */
-  .mobile-only {
-    display: flex;
+  /* Hide the chat component by default on mobile */
+  .chat-activity-container {
+    display: none;
   }
   
-  /* Ensure the ChatActivity component takes full height and width on mobile */
-  .chat-activity-container {
+  /* Show the chat when it has the mobile-chat-active class */
+  .chat-activity-container.mobile-chat-active {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
     height: 100vh;
     width: 100vw;
+  }
+  
+  /* Adjust header for mobile */
+  .chat-header {
+    height: 56px;
+  }
+  
+  /* Make back button more visible on mobile */
+  .back-button {
+    padding: 8px;
+  }
+  
+  /* Adjust message width for mobile */
+  .message {
+    max-width: 80%;
   }
 }

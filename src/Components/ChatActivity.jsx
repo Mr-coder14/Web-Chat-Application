@@ -14,7 +14,7 @@ import { getAuth } from 'firebase/auth';
 import { ArrowLeft, Send } from 'lucide-react';
 import '../css/ChatActivity.css';
 
-function ChatActivity({ receiverUid, backFunction }) {
+function ChatActivity({ receiverUid, backFunction, isMobile }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [user, setUser] = useState(null);
@@ -231,7 +231,7 @@ function ChatActivity({ receiverUid, backFunction }) {
     get(senderRoomRef).then((snapshot) => {
       if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
-          update(child(senderRoomRef, `${childSnapshot.key}/seen`), true);
+          update(child(senderRoomRef, childSnapshot.key), { seen: true });
         });
       }
     });
@@ -240,7 +240,7 @@ function ChatActivity({ receiverUid, backFunction }) {
     get(receiverRoomRef).then((snapshot) => {
       if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
-          update(child(receiverRoomRef, `${childSnapshot.key}/seen`), true);
+          update(child(receiverRoomRef, childSnapshot.key), { seen: true });
         });
       }
     });
@@ -331,52 +331,55 @@ function ChatActivity({ receiverUid, backFunction }) {
   };
 
   return (
-    <div className="chat-activity-container">
+    <div className={`chat-activity-container ${isMobile ? 'mobile-chat-active' : ''}`}>
       {/* Chat header */}
       <div className="chat-header">
-        {/* Only show back button on mobile */}
-        <button className="back-button mobile-only" onClick={backFunction || (() => window.history.back())}>
-          <ArrowLeft size={24} />
-        </button>
-        
-        {loading ? (
-          <div className="profile-placeholder"></div>
-        ) : (
-          <div className="profile-info" onClick={() => window.location.href = `/profile?userid=${receiverUid}`}>
-            <div className="profile-image">
-              {user?.profile ? (
-                <img src={`/assets/${user.profile}`} alt="Profile" />
-              ) : (
-                <img src="person3.jpg" alt="Default Profile" />
-              )}
+        <div className="chat-header-content">
+          
+          
+          {loading ? (
+            <div className="profile-placeholder"></div>
+          ) : (
+            <div className="profile-info1" onClick={() => window.location.href = `/profile?userid=${receiverUid}`}>
+              <div className="profile-image">
+                {user?.profile ? (
+                  <img src={`/assets/${user.profile}`} alt="Profile" />
+                ) : (
+                  <div className="profile-fallback">{user?.name?.charAt(0) || 'U'}</div>
+                )}
+              </div>
+              <div className="user-details">
+                <h3>{user?.name || 'User'}</h3>
+                <p className="status-text">{receiverStatus}</p>
+              </div>
             </div>
-            <div className="user-details">
-              <h3>{user?.name || 'User'}</h3>
-              <p className="status-text">{receiverStatus}</p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-
-      {/* Messages area */}
+      
+      {/* Messages container */}
       <div className="messages-container">
         {loading ? (
-          <div className="loading-spinner"></div>
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
         ) : isBlocked ? (
           <div className="blocked-message">
-            {blockedBy === 'receiver' ? 'You cannot message this user' : 'You blocked this user'}
+            {blockedBy === 'receiver' ? 'You have been blocked by this user.' : 'You have blocked this user.'}
           </div>
         ) : messages.length === 0 ? (
-          <div className="no-messages">No messages yet. Start a conversation!</div>
+          <div className="no-messages">No messages yet. Start the conversation!</div>
         ) : (
           messages.map((message, index) => (
             <div 
               key={index} 
               className={`message ${message.senderId === currentUserId ? 'sent' : 'received'}`}
               onContextMenu={(e) => {
-                e.preventDefault();
-                if (confirm('Do you want to report this message?')) {
-                  handleReportMessage(message);
+                if (message.senderId !== currentUserId) {
+                  e.preventDefault();
+                  if (window.confirm('Report this message?')) {
+                    handleReportMessage(message);
+                  }
                 }
               }}
             >
@@ -386,7 +389,7 @@ function ChatActivity({ receiverUid, backFunction }) {
                   <span className="message-time">{formatTime(message.timestamp)}</span>
                   {message.senderId === currentUserId && (
                     <span className={`seen-indicator ${message.seen ? 'seen' : ''}`}>
-                      ✓
+                      {message.seen ? '✓✓' : '✓'}
                     </span>
                   )}
                 </div>
@@ -396,23 +399,23 @@ function ChatActivity({ receiverUid, backFunction }) {
         )}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input area */}
+      
+      {/* Input container */}
       {!isBlocked && (
         <div className="input-container">
           <textarea
+            placeholder="Type a message..."
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type a message..."
-            disabled={isBlocked}
+            rows={1}
           />
           <button 
             className="send-button" 
-            onClick={sendMessage}
-            disabled={inputMessage.trim() === '' || isBlocked}
+            onClick={sendMessage} 
+            disabled={inputMessage.trim() === ''}
           >
-            <Send size={24} />
+            <Send size={18} />
           </button>
         </div>
       )}
