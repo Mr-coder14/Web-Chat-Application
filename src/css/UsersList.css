@@ -1,0 +1,62 @@
+.users-list-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .users-heading {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+  }
+  
+  .users-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+  
+  .user-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .message-button {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .message-button:hover {
+    background-color: #0056b3;
+  }
+  

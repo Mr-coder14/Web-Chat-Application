@@ -1,0 +1,372 @@
+/* Container Styling */
+.loginboxloginl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    position: relative;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .loginbox1loginl {
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .loginbox1loginl:hover {
+    transform: translateY(-5px);
+  }
+  
+  .loginh1loginl {
+    color: #5271ff;
+    margin-bottom: 30px;
+    font-weight: 700;
+    font-size: 28px;
+    position: relative;
+    padding-bottom: 12px;
+  }
+  
+  .loginh1loginl::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #5271ff, #a777e3);
+    border-radius: 2px;
+  }
+  
+  /* Updated Input Field Styling */
+  .logininputloginl {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    margin: 15px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    background-color: #f7f9ff; /* Light blue background */
+    color: #333;
+  }
+  
+  .logininputloginl:focus {
+    border-color: #5271ff;
+    box-shadow: 0 0 0 2px rgba(82, 113, 255, 0.2);
+    outline: none;
+    background-color: #ffffff; /* White background when focused */
+  }
+  
+  .logininputloginl::placeholder {
+    color: #8395c7; /* Blueish placeholder text */
+  }
+  
+  .logininputloginl:hover {
+    background: linear-gradient(to right, #f7f9ff, #eef2ff);
+    border-color: #beccff;
+  }
+  
+  /* Updated Reset Email Input Styling */
+  .reset-email-inputloginl {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    background-color: #f7f9ff; /* Light blue background */
+    color: #333;
+  }
+  
+  .reset-email-inputloginl:focus {
+    border-color: #5271ff;
+    box-shadow: 0 0 0 2px rgba(82, 113, 255, 0.2);
+    outline: none;
+    background-color: #ffffff; /* White background when focused */
+  }
+  
+  .reset-email-inputloginl:hover {
+    background: linear-gradient(to right, #f7f9ff, #eef2ff);
+    border-color: #beccff;
+  }
+  
+  /* Button Styling */
+  .loginbuttonloginl {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, #5271ff, #6e8efb);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 4px 10px rgba(82, 113, 255, 0.3);
+  }
+  
+  .loginbuttonloginl:hover {
+    background: linear-gradient(90deg, #4260f5, #5b7ef7);
+    box-shadow: 0 6px 12px rgba(82, 113, 255, 0.4);
+    transform: translateY(-2px);
+  }
+  
+  .loginbuttonloginl:active {
+    transform: translateY(1px);
+  }
+  
+  /* Sign-up Link Styling */
+  .signup-linkloginl {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #666;
+  }
+  
+  .signup-textloginl {
+    color: #5271ff !important;
+    font-weight: 600;
+    margin-left: 6px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .signup-textloginl:hover {
+    color: #3d5af0 !important;
+  }
+  
+  /* Success/Error Message Styling */
+  /* .loginmessageloginl {
+    margin-top: 15px;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 8px;
+    animation: slideIn 0.5s ease-out;
+    font-weight: 500;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .loginmessageloginl.success {
+    background: linear-gradient(90deg, #28a745, #20c997);
+  }
+  
+  .loginmessageloginl.error {
+    background: linear-gradient(90deg, #ff4d4d, #ff6b6b);
+  }
+  
+  .loginmessageloginl.loading {
+    background: linear-gradient(90deg, #5271ff, #6e8efb);
+    animation: pulse 1.5s infinite;
+  } */
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  /* Reset Password Modal */
+  .reset-modaloginl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .reset-modal-contentloginl {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  @keyframes modalSlideIn {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .reset-modal-contentloginl h4 {
+    color: #5271ff;
+    font-size: 20px;
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  
+  .reset-buttonsloginl {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 15px;
+    gap: 12px;
+  }
+  
+  .reset-buttonloginl, .cancel-buttonloginl {
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reset-buttonloginl {
+    background: linear-gradient(90deg, #5271ff, #6e8efb);
+    color: white;
+  }
+  
+  .reset-buttonloginl:hover {
+    background: linear-gradient(90deg, #4260f5, #5b7ef7);
+    box-shadow: 0 5px 10px rgba(82, 113, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .cancel-buttonloginl {
+    background: linear-gradient(90deg, #f44336, #ff6b6b);
+    color: white;
+  }
+  
+  .cancel-buttonloginl:hover {
+    background: linear-gradient(90deg, #e53935, #ff5252);
+    box-shadow: 0 5px 10px rgba(244, 67, 54, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  /* Password Input and Checkbox Styling */
+  .password-containerloginl {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .showloginl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 5px 0 15px;
+    padding: 0 2px;
+  }
+  
+  .show-passwordloginl {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+    gap: 5px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .show-passwordloginl:hover {
+    color: #5271ff;
+  }
+  
+  .show-passwordloginl input[type="checkbox"] {
+    accent-color: #5271ff;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  .forgotpasswordlinkloginl {
+    color: #5271ff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s;
+    font-weight: 500;
+  }
+  
+  .forgotpasswordlinkloginl:hover {
+    color: #3d5af0;
+    text-decoration: underline;
+  }
+  
+  /* Loading state */
+  /* .loadingloginl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 18px;
+    color: white;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+  } */
+  
+  /* Responsive Adjustments */
+  @media (max-width: 480px) {
+    .loginbox1loginl {
+      padding: 30px 20px;
+    }
+    
+    .reset-modal-contentloginl {
+      width: 85%;
+      max-width: 320px;
+    }
+    
+    .showloginl {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }

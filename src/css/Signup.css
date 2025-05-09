@@ -1,0 +1,261 @@
+/* Container Styling */
+.signupboxsignupt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    position: relative;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .signupbox1signupt {
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .signupbox1signupt:hover {
+    transform: translateY(-5px);
+  }
+  
+  .signuph1signupt {
+    color: #5271ff;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 28px;
+    position: relative;
+    padding-bottom: 12px;
+  }
+  
+  .signuph1signupt::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #5271ff, #a777e3);
+    border-radius: 2px;
+  }
+  
+  /* Updated Input Field Styling */
+  .signupinputsignupt {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    margin: 12px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    background-color: #f7f9ff; /* Light blue background */
+    color: #333;
+  }
+  
+  .signupinputsignupt:focus {
+    border-color: #5271ff;
+    box-shadow: 0 0 0 2px rgba(82, 113, 255, 0.2);
+    outline: none;
+    background-color: #ffffff; /* White background when focused */
+  }
+  
+  .signupinputsignupt::placeholder {
+    color: #8395c7; /* Blueish placeholder text */
+  }
+  
+  /* You can also add a subtle gradient effect on hover */
+  .signupinputsignupt:hover {
+    background: linear-gradient(to right, #f7f9ff, #eef2ff);
+    border-color: #beccff;
+  }
+  
+  /* Button Styling */
+  .signupbuttonsignupt {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, #5271ff, #6e8efb);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 4px 10px rgba(82, 113, 255, 0.3);
+  }
+  
+  .signupbuttonsignupt:hover {
+    background: linear-gradient(90deg, #4260f5, #5b7ef7);
+    box-shadow: 0 6px 12px rgba(82, 113, 255, 0.4);
+    transform: translateY(-2px);
+  }
+  
+  .signupbuttonsignupt:active {
+    transform: translateY(1px);
+  }
+  
+  /* Login Link Styling */
+  .login-linksignupt {
+    margin-top: 20px;
+    font-size: 15px;
+    color: #666;
+  }
+  
+  .loginlinktextsignupt {
+    color: #5271ff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.2s;
+  }
+  
+  .loginlinktextsignupt:hover {
+    color: #3d5af0;
+    text-decoration: underline;
+  }
+  
+  /* Message Styling */
+  .signupmessagesignupt {
+    margin-top: 15px;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 8px;
+    animation: fadeInsignupt 0.5s ease-out;
+    font-weight: 500;
+    color: #fff;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .signupmessagesignupt.errorsignupt {
+    background: linear-gradient(90deg, #ff4d4d, #ff6b6b);
+    color: #fff;
+  }
+  
+  @keyframes fadeInsignupt {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Show Password and Terms Checkboxes */
+  .show-password-containersignupt,
+  .terms-containersignupt {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 12px 0;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .checkboxinputsignupt {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #5271ff;
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: background 0.2s, border 0.2s;
+  }
+  
+  .checkboxinputsignupt:checked {
+    background-color: #5271ff;
+    border-color: #5271ff;
+  }
+  
+  .checkboxinputsignupt:checked::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .show-password-containersignupt:hover,
+  .terms-containersignupt:hover {
+    color: #5271ff;
+  }
+  
+  .checkboxlabelsignupt,
+  .termslabelsignupt {
+    cursor: pointer;
+  }
+  
+  .termslabelsignupt {
+    color: #5271ff;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+  
+  .termslabelsignupt:hover {
+    color: #3d5af0;
+  }
+  
+  /* Loading State */
+  .loadingsignupt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 18px;
+    color: #5271ff;
+    position: relative;
+  }
+  
+  .loadingsignupt::after {
+    content: "";
+    width: 40px;
+    height: 40px;
+    border: 5px solid rgba(82, 113, 255, 0.2);
+    border-radius: 50%;
+    border-top-color: #5271ff;
+    position: absolute;
+    animation: spinsignupt 1s linear infinite;
+  }
+  
+  @keyframes spinsignupt {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 480px) {
+    .signupbox1signupt {
+      padding: 30px 20px;
+    }
+    
+    .signuph1signupt {
+      font-size: 24px;
+    }
+    
+    .signupinputsignupt {
+      padding: 12px 14px;
+    }
+  }
