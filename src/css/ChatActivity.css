@@ -279,6 +279,6 @@
   
   .message-input-container {
     /* Apply additional bottom padding on mobile */
-    padding-bottom: 77px;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0));
   }
 }
